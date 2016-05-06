@@ -12,10 +12,13 @@ public class Relationship{
     }
     
     public Integer get(String s, String t) {
-        return relat.get(s).get(t);
+        if (relat.get(s) != null)
+            return relat.get(s).get(t);
+        else
+            return null;
     }
     
-    public void put(String s, String t, Integer effect) {
+    public void set(String s, String t, Integer effect) {
         if (!relat.containsKey(s)) {
             relat.put(s, new Hashtable<String, Integer>());
         }
@@ -27,7 +30,10 @@ public class Relationship{
     }
     
     public String[] getNodeList(String s) {
-        return relat.get(s).keySet().toArray(new String[0]);
+        if (relat.get(s) != null)
+            return relat.get(s).keySet().toArray(new String[0]);
+        else
+            return null;
     }
 
     public int size() {
@@ -58,7 +64,7 @@ public class Relationship{
         
         for (String s : getNodeList()) {
             for (String t : getNodeList(s)) {
-                copy.put(s, t, get(s, t));
+                copy.set(s, t, get(s, t));
             }
         }
         

@@ -10,6 +10,7 @@ Sic1 1
 Cdc20/14 0
 MBF 0
 Cdh1 1
+
 SBF Cln1,2 1
 Clb5,6 Mcm1/SFF 1
 Clb5,6 Clb1,2 1
@@ -43,3 +44,4 @@ Cdc20/14 Clb5,6 -100
 Cdc20/14 Cdc20/14 -1
 MBF Clb5,6 1
 Cdh1 Clb1,2 -100
+

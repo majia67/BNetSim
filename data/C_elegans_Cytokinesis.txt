@@ -1,0 +1,71 @@
+27
+PRC1 0
+Plk1 0
+NMY-2 0
+AstralMt 0
+MLC-4 0
+ROCK 0
+F-Actin 0
+ZEN-4 0
+ContrRing 0
+ECT-2 0
+KIF4 0
+CYK-4 1
+CYK-1 0
+ANI-1 0
+NOP-1 0
+CenSpinMt 0
+CenSpindlin 0
+RhoA(GTP) 0
+CleaFurContr 0
+MLC-4(P) 0
+Cdk1 0
+RGA-3/4 0
+MEL-11 0
+RhoA(GDP) 0
+Profilin 0
+NMY-2(P) 0
+LET-502 0
+
+PRC1 CenSpinMt 1
+PRC1 Plk1 1
+PRC1 KIF4 1
+Plk1 ECT-2 1
+Plk1 KIF4 1
+NMY-2 ContrRing 1
+AstralMt ANI-1 1
+MLC-4 ContrRing 1
+ROCK MEL-11 -100
+ROCK MLC-4(P) 1
+F-Actin ContrRing 1
+F-Actin MLC-4 1
+F-Actin NMY-2 1
+ZEN-4 CenSpindlin 1
+ContrRing LET-502 1
+ECT-2 RhoA(GDP) -100
+ECT-2 RhoA(GTP) 1
+KIF4 CenSpinMt 1
+CYK-4 CenSpindlin 1
+CYK-1 ContrRing 1
+CYK-1 Profilin 1
+CYK-1 CYK-1 -1
+CYK-1 RhoA(GTP) 1
+ANI-1 AstralMt 1
+ANI-1 NMY-2 1
+NOP-1 ECT-2 1
+CenSpinMt CenSpindlin 1
+CenSpindlin ECT-2 1
+RhoA(GTP) ROCK 1
+RhoA(GTP) ANI-1 1
+RhoA(GTP) CYK-1 1
+MLC-4(P) NMY-2(P) 1
+Cdk1 PRC1 -100
+Cdk1 ZEN-4 -100
+Cdk1 CYK-4 -100
+RGA-3/4 RhoA(GDP) 1
+RGA-3/4 RhoA(GTP) -100
+MEL-11 MLC-4(P) -100
+Profilin F-Actin 1
+NMY-2(P) CleaFurContr 1
+LET-502 MEL-11 -100
+

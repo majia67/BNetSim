@@ -16,14 +16,12 @@ import java.util.Scanner;
 
 public class Network {
     
-    private Node node;
-    private Relationship relat;
+    private NodeList nodeList;
+    private Relationship relationship;
     private int loop; 
     private boolean hasChanged;
     
     public Network() {
-        node = new Node();
-        relat = new Relationship();
         loop = 0;
         hasChanged = false;
     }
@@ -32,10 +30,27 @@ public class Network {
         this();
         this.readFile(file);
     }
-
+    
+    public Network(NodeList nList, Relationship relat) {
+        nodeList = nList;
+        relationship = relat;
+        
+        //Verify the network is constructed correctly
+        for (String s : nList.getNameList()) {
+            for (String t : relat.getNodeList(s)) {
+                if (!nList.contains(t)) {
+                    System.err.println("Invalid relationship: " + "Node " + t + " is not set in the vertices.");
+                }
+            }
+        }
+    }
+    
     public void readFile(String file) {
+        nodeList = new NodeList();
+        relationship = new Relationship();
+        
         //Check if node and relationship container is not empty
-        if (node.size() != 0 || relat.size() != 0) {
+        if (nodeList.size() != 0 || relationship.size() != 0) {
             System.err.println("Warning! The network is not empty. "
                     + "Reading from new files may overwrite existing "
                     + "node and relationship information!");
@@ -47,16 +62,17 @@ public class Network {
             int totalNode = sc.nextInt();
             
             for (int i = 0; i < totalNode; i++) {
-                String nid = sc.next();
-                int state = sc.nextInt();
-                node.put(nid, state);
+                Node s = new Node();
+                s.name = sc.next();
+                s.state = sc.nextInt();
+                nodeList.set(s);
             }
             
             while (sc.hasNext()) {
                 String s = sc.next();
                 String t = sc.next();
                 int effect = sc.nextInt();
-                relat.put(s, t, effect);
+                relationship.set(s, t, effect);
             }
             
             sc.close();
@@ -65,29 +81,38 @@ public class Network {
             e.printStackTrace();
         }
     }
-
-    public void writeFile(String file) {
+    
+    /*
+     * Write the network structure into file with compliance to Pajek format
+     */
+    public void writeFile(String prefix) {
         try {
-            BufferedWriter writer = new BufferedWriter(
-                    new FileWriter(file));
-
-            //Write total number of nodes
-            writer.write(Integer.toString(node.size()));
-            writer.newLine();
             
-            //Write node's name and its initial state
-            for (String nd : node) {
-                writer.write(nd + " " + node.get(nd));
+            //=== Write .net Network file ===
+            BufferedWriter writer = new BufferedWriter(
+                    new FileWriter(prefix + ".net"));
+            
+            //Write Vertices
+            writer.write("*Vertices " + Integer.toString(nodeList.size()));
+            writer.newLine();
+            String[] vertices = nodeList.getNameList();
+            for (int i = 0; i < vertices.length; i++) {
+                writer.write(i + " \"" + vertices[i] + "\"");
                 writer.newLine();
             }
-           
-            //Write interaction network
-            for (String s : node) {
-                for (String t : relat.getNodeList(s)) {
-                    writer.write(s + " " + t + " " + relat.get(s, t));
+            writer.newLine();
+            
+            //Write Arcs
+            writer.write("*Arcs");
+            writer.newLine();
+            for (int i = 0; i < vertices.length; i++) {
+                if (relationship.getNodeList(vertices[i]) == null) { continue; }
+                for (int j = 0; j < vertices.length; j++) {
+                    writer.write(i + " " + j + " " + relationship.get(vertices[i], vertices[j]));
                     writer.newLine();
                 }
             }
+            writer.newLine();
 
             writer.close();
             
@@ -104,54 +129,38 @@ public class Network {
         */
         loop ++;
         hasChanged = false;
-        Node oldNode = node.clone();
+        NodeList oldNode = nodeList.clone();
         
-        for (String s : getNodeList()) {
+        for (Node s : nodeList) {
             int score = 0;
-            for (String t : node) {
-                if (oldNode.get(t) == Node.ON && relat.get(t, s) != null) {
-                    score += relat.get(t, s);
+            for (Node t : nodeList) {
+                if (oldNode.get(t.name).state == NodeList.ON && 
+                        relationship.get(t.name, s.name) != null) {
+                    score += relationship.get(t.name, s.name);
                 }
             }
 
             //Change the node state according to the score. 
             //If the score equals to 0, the node state will not change.
             if (score > 0) {
-                node.put(s, Node.ON);                
+                s.state = NodeList.ON;                
             }
             else if (score < 0) {
-                node.put(s, Node.OFF);
+                s.state = NodeList.OFF;
             }
             
             //Check if node states are changed in this round
-            if (!node.get(s).equals(oldNode.get(s)))
+            if (s.state != oldNode.get(s.name).state)
                 hasChanged = true;
         }
     }
     
-    public String[] getNodeList() {
-        return node.getNodeList();
+    public NodeList getNodeList() {
+        return nodeList.clone();
     }
     
-    public int getNodeState(String name) {
-        return node.get(name);
-    }
-    
-    public void setNode(String name, Integer state) {
-        node.put(name, state);
-    }
-    
-    public int getRelationship(String s, String t) {
-        return relat.get(s, t);
-    }
-    
-    public void setRelationship(String s, String t, int effect) throws InvalidRelationshipException {
-        if (node.contains(s) && node.contains(t)) {
-            relat.put(s, t, effect);
-        }
-        else {
-            throw new InvalidRelationshipException("The specified node doesn't exist in the current network.");
-        }
+    public Relationship getRelationship() {
+        return relationship.clone();
     }
     
     public int getLoop() {
@@ -163,11 +172,11 @@ public class Network {
     }
     
     public String printNode() {
-        return node.toString();
+        return nodeList.toString();
     }
     
     public String printRelationship() {
-        return relat.toString();
+        return relationship.toString();
     }
     
     public String toString() {
@@ -181,5 +190,10 @@ public class Network {
         
         return result;
     }
-
+    
+    public static void main(String[] args) {
+        //Unit Test
+//        Network net = new Network();
+//        net.writeFile("data/test.txt");
+    }
 }
