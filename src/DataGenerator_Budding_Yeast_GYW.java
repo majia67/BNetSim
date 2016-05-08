@@ -12,7 +12,7 @@ import java.io.File;
 public class DataGenerator_Budding_Yeast_GYW {
     
     private static String fileName = "data" + File.separator + 
-                              "Budding_Yeast_Cell_Cycle.txt";
+                              "Budding_Yeast_Cell_Cycle";
     private static int positive             = 1;
     private static int negative             = -100;
     private static int selfInhibition       = -1;

@@ -39,7 +39,8 @@ public class Network {
         for (String s : nList.getNameList()) {
             for (String t : relat.getNodeList(s)) {
                 if (!nList.contains(t)) {
-                    System.err.println("Invalid relationship: " + "Node " + t + " is not set in the vertices.");
+                    System.err.println("Invalid relationship: " + "Node " + t
+                            + " is not set in the vertices.");
                 }
             }
         }
@@ -97,10 +98,9 @@ public class Network {
             writer.newLine();
             String[] vertices = nodeList.getNameList();
             for (int i = 0; i < vertices.length; i++) {
-                writer.write(i + " \"" + vertices[i] + "\"");
+                writer.write((i+1) + "\t" + vertices[i]);
                 writer.newLine();
             }
-            writer.newLine();
             
             //Write Arcs
             writer.write("*Arcs");
@@ -108,11 +108,12 @@ public class Network {
             for (int i = 0; i < vertices.length; i++) {
                 if (relationship.getNodeList(vertices[i]) == null) { continue; }
                 for (int j = 0; j < vertices.length; j++) {
-                    writer.write(i + " " + j + " " + relationship.get(vertices[i], vertices[j]));
-                    writer.newLine();
+                    if (relationship.get(vertices[i], vertices[j]) != null) {
+                        writer.write((i+1) + "\t" + (j+1) + "\t" + relationship.get(vertices[i], vertices[j]));
+                        writer.newLine();                        
+                    }
                 }
             }
-            writer.newLine();
 
             writer.close();
             
