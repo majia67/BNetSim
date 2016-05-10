@@ -13,6 +13,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Hashtable;
+import java.util.Map.Entry;
 import java.util.Scanner;
 
 public class Network {
@@ -21,10 +22,12 @@ public class Network {
     private Relationship relationship;
     private int loop; 
     private boolean hasChanged;
+    private boolean hasTerminated;
     
     private Network() {
         loop = 0;
         hasChanged = false;
+        hasTerminated = false;
     }
     
     public Network(String file) {
@@ -222,15 +225,36 @@ public class Network {
             //Change the node state according to the score. 
             //If the score equals to 0, the node state will not change.
             if (score > 0) {
-                s.state = Node.ON;                
+                if (s.requires != null) {
+                    //Check requirements before setting node state
+                    boolean meetRequirements = true;
+                    for (Entry<String, Integer> t : s.requires.entrySet()) {
+                        if (oldNode.get(t.getKey()).state != t.getValue().intValue()) {
+                            meetRequirements = false;
+                            break;
+                        }
+                    }
+                    if (meetRequirements) {
+                        s.state = Node.ON;
+                    }
+                }
+                else {
+                    s.state = Node.ON;                
+                }
             }
             else if (score < 0) {
                 s.state = Node.OFF;
             }
             
             //Check if node states are changed in this round
-            if (s.state != oldNode.get(s.name).state)
+            if (s.state != oldNode.get(s.name).state) {
                 hasChanged = true;
+            }
+            
+            //Check if Milestone with termination is activated
+            if (s.type.equals("Milestone") && s.milestone_termination && s.state == Node.ON) {
+                hasTerminated = true;
+            }
         }
     }
     
@@ -248,6 +272,10 @@ public class Network {
     
     public boolean hasChanged() {
         return hasChanged;
+    }
+    
+    public boolean hasTerminated() {
+        return hasTerminated;
     }
     
     public String printNode() {

@@ -19,7 +19,7 @@ public class StatePrediction {
         System.out.println(network.printNode());
         for (int i = 0; i < maxRound; i ++) {
             network.next();
-            if (!network.hasChanged()) {
+            if (!network.hasChanged() || network.hasTerminated()) {
                 System.out.println("Network remains stable.");
                 System.out.println(network.printNode());
                 break;

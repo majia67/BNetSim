@@ -26,7 +26,7 @@ public class DataGenerator_C_elegans_Cytokinesis {
         //Insert node information
         Node nd;
         nList.add(new Node("CYK-4", ON));
-        nList.add(new Node("ZEN-4", OFF));
+        nList.add(new Node("ZEN-4", ON));
         nList.add(new Node("NOP-1", OFF));
         nList.add(new Node("ECT-2", OFF));
         nList.add(new Node("RGA-3/4", OFF));
