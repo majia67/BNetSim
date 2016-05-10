@@ -10,13 +10,8 @@ public class StatePrediction {
     
     Network network;
     
-    public StatePrediction() {
-        network = new Network();
-    }
-    
     public StatePrediction(String file) {
-        this();
-        network.readFile(file);
+        network = new Network(file);
     }
     
     public void run(int maxRound) {

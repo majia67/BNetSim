@@ -12,6 +12,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Hashtable;
 import java.util.Scanner;
 
 public class Network {
@@ -21,7 +22,7 @@ public class Network {
     private int loop; 
     private boolean hasChanged;
     
-    public Network() {
+    private Network() {
         loop = 0;
         hasChanged = false;
     }
@@ -32,52 +33,83 @@ public class Network {
     }
     
     public Network(NodeList nList, Relationship relat) {
+        this();
         nodeList = nList;
         relationship = relat;
         
         //Verify the network is constructed correctly
-        for (String s : nList.getNameList()) {
-            for (String t : relat.getNodeList(s)) {
-                if (!nList.contains(t)) {
-                    System.err.println("Invalid relationship: " + "Node " + t
-                            + " is not set in the vertices.");
+        for (Node s : nodeList) {
+            if (relat.getNodeList(s.name) != null) {
+                for (String t : relat.getNodeList(s.name)) {
+                    if (!nList.contains(t)) {
+                        System.err.println("Invalid relationship: " + "Node " + t
+                                + " is not set in the vertices.");
+                    }
                 }
             }
         }
     }
     
-    public void readFile(String file) {
+    private void readFileHelper(String file) throws FileNotFoundException {
+        Scanner sc = new Scanner(new BufferedReader(new FileReader(file)));
+        String line = null;
+        String mode = null;
+        String modePattern = "\\*(\\w+)";
+        while (sc.hasNext()) {
+            line = sc.findInLine(modePattern);
+            if (line != null) { 
+                mode = line;
+                sc.nextLine();
+                continue;
+            }
+            switch (mode) {
+            case "*Vertices":
+                Node s = new Node();
+                sc.nextInt();
+                s.name = sc.next();
+                nodeList.add(s);
+                break;
+            case "*Arcs":
+                Node na = nodeList.get(sc.nextInt());
+                Node nb = nodeList.get(sc.nextInt());
+                int relat = sc.nextInt();
+                relationship.set(na.name, nb.name, relat);
+                break;
+            case "*States":
+                na = nodeList.get(sc.nextInt());
+                na.state = sc.nextInt();
+                break;
+            case "*Types":
+                na = nodeList.get(sc.nextInt());
+                String type = sc.next();
+                na.type = type;
+                break;
+            case "*Requirements":
+                na = nodeList.get(sc.nextInt());
+                nb = nodeList.get(sc.nextInt());
+                int state = sc.nextInt();
+                na.setRequires(nb.name, state);
+                break;
+            case "*Milestone":
+                na = nodeList.get(sc.nextInt());
+                na.milestone_termination = sc.nextBoolean();
+                break;
+            }
+            sc.nextLine();
+        }
+        sc.close();
+    }
+    
+    private void readFile(String prefix) {
+
         nodeList = new NodeList();
         relationship = new Relationship();
         
-        //Check if node and relationship container is not empty
-        if (nodeList.size() != 0 || relationship.size() != 0) {
-            System.err.println("Warning! The network is not empty. "
-                    + "Reading from new files may overwrite existing "
-                    + "node and relationship information!");
-        }
-        
         try {
-            Scanner sc = new Scanner(new BufferedReader(new FileReader(file)));
             
-            int totalNode = sc.nextInt();
-            
-            for (int i = 0; i < totalNode; i++) {
-                Node s = new Node();
-                s.name = sc.next();
-                s.state = sc.nextInt();
-                nodeList.set(s);
-            }
-            
-            while (sc.hasNext()) {
-                String s = sc.next();
-                String t = sc.next();
-                int effect = sc.nextInt();
-                relationship.set(s, t, effect);
-            }
-            
-            sc.close();
-            
+            readFileHelper(prefix + ".net");
+            readFileHelper(prefix + ".bns");
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -88,6 +120,8 @@ public class Network {
      */
     public void writeFile(String prefix) {
         try {
+
+            String[] vertices = nodeList.getNameList();
             
             //=== Write .net Network file ===
             BufferedWriter writer = new BufferedWriter(
@@ -96,25 +130,69 @@ public class Network {
             //Write Vertices
             writer.write("*Vertices " + Integer.toString(nodeList.size()));
             writer.newLine();
-            String[] vertices = nodeList.getNameList();
-            for (int i = 0; i < vertices.length; i++) {
-                writer.write((i+1) + "\t" + vertices[i]);
+            for (int i = 1; i <= nodeList.size(); i++) {
+                writer.write(i + "\t" + vertices[i]);
                 writer.newLine();
             }
             
             //Write Arcs
             writer.write("*Arcs");
             writer.newLine();
-            for (int i = 0; i < vertices.length; i++) {
+            for (int i = 1; i <= nodeList.size(); i++) {
                 if (relationship.getNodeList(vertices[i]) == null) { continue; }
-                for (int j = 0; j < vertices.length; j++) {
+                for (int j = 1; j <= nodeList.size(); j++) {
                     if (relationship.get(vertices[i], vertices[j]) != null) {
-                        writer.write((i+1) + "\t" + (j+1) + "\t" + relationship.get(vertices[i], vertices[j]));
+                        writer.write(i + "\t" + j + "\t" + relationship.get(vertices[i], vertices[j]));
                         writer.newLine();                        
                     }
                 }
             }
+            
+            writer.close();
 
+            //=== Write .bns BNetSim file ===
+            writer = new BufferedWriter(
+                    new FileWriter(prefix + ".bns"));
+            
+            //Write States
+            writer.write("*States");
+            writer.newLine();
+            for (int i = 1; i <= nodeList.size(); i++) {
+                writer.write(i + "\t" + nodeList.get(i).state);
+                writer.newLine();
+            }
+            
+            //Write Types
+            writer.write("*Types");
+            writer.newLine();
+            for (int i = 1; i <= nodeList.size(); i++) {
+                writer.write(i + "\t" + nodeList.get(i).type);
+                writer.newLine();
+            }
+            
+            //Write Requirements
+            writer.write("*Requirements");
+            writer.newLine();
+            for (int i = 1; i <= nodeList.size(); i++) {
+                Hashtable<String, Integer> req = nodeList.get(i).requires;
+                if (req != null) {
+                    for (String s : req.keySet()) {
+                        writer.write(i + "\t" + (nodeList.getIndex(s)) + "\t" + req.get(s));
+                        writer.newLine();
+                    }
+                }
+            }
+            
+            //Write Milestone
+            writer.write("*Milestone");
+            writer.newLine();
+            for (int i = 1; i <= nodeList.size(); i++) {
+                if (nodeList.get(i).type == "Milestone") {
+                    writer.write(i + "\t" + nodeList.get(i).milestone_termination);
+                    writer.newLine();
+                }
+            }
+            
             writer.close();
             
         } catch (IOException e) {
@@ -135,7 +213,7 @@ public class Network {
         for (Node s : nodeList) {
             int score = 0;
             for (Node t : nodeList) {
-                if (oldNode.get(t.name).state == NodeList.ON && 
+                if (oldNode.get(t.name).state == Node.ON && 
                         relationship.get(t.name, s.name) != null) {
                     score += relationship.get(t.name, s.name);
                 }
@@ -144,10 +222,10 @@ public class Network {
             //Change the node state according to the score. 
             //If the score equals to 0, the node state will not change.
             if (score > 0) {
-                s.state = NodeList.ON;                
+                s.state = Node.ON;                
             }
             else if (score < 0) {
-                s.state = NodeList.OFF;
+                s.state = Node.OFF;
             }
             
             //Check if node states are changed in this round

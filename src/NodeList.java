@@ -11,15 +11,13 @@ import java.util.Iterator;
 
 public class NodeList implements Iterable<Node>{
     
-    public static final int ON = 1;
-    public static final int OFF = 0;
-    
     private Hashtable<String, Integer> indexTable;
     private ArrayList<Node> nodeList;
     
     public NodeList() {
         indexTable = new Hashtable<String, Integer>();
         nodeList = new ArrayList<Node>();
+        nodeList.add(null);     //Set starting index from 1
     }
     
     public Node get(String name) {
@@ -30,6 +28,13 @@ public class NodeList implements Iterable<Node>{
         return nodeList.get(index);
     }
 
+    public int getIndex(String name) {
+        if (indexTable.containsKey(name)) {
+            return indexTable.get(name);
+        }
+        return -1;
+    }
+    
     public int getNodeState(String name) {
         return nodeList.get(indexTable.get(name)).state;
     }
@@ -38,14 +43,14 @@ public class NodeList implements Iterable<Node>{
         return nodeList.get(index).state;
     }
     
-    public boolean set(Node node) {
+    public boolean add(Node node) {
         if (indexTable.get(node.name) != null) {
             System.err.println("Error: adding duplicate node!");
             return false;
-        }
-        indexTable.put(node.name, nodeList.size());
+        }        
         nodeList.add(node);
-        return true; 
+        indexTable.put(node.name, size());
+        return true;
     }
     
     public Node[] getNodeList() {
@@ -53,15 +58,16 @@ public class NodeList implements Iterable<Node>{
     }
     
     public String[] getNameList() {
-        String[] nameList = new String[size()];
-        for (int i = 0; i < size(); i++) {
+        String[] nameList = new String[nodeList.size()];
+        nameList[0] = null;
+        for (int i = 1; i <= size(); i++) {
             nameList[i] = nodeList.get(i).name;
         }
         return nameList;
     }
     
     public int size() {
-        return nodeList.size();
+        return nodeList.size()-1;
     }
     
     public boolean contains(String name) {
@@ -70,34 +76,46 @@ public class NodeList implements Iterable<Node>{
     
     @Override
     public Iterator<Node> iterator() {
-        return nodeList.iterator();
+        return new Iterator<Node>() {
+            private int index = 1;
+            @Override
+            public boolean hasNext() {
+                return index < nodeList.size();
+            }
+
+            @Override
+            public Node next() {
+                return nodeList.get(index++);
+            }
+            
+        };
     }
     
     public String toString() {
         String result = new String();
-        String[] pattern = new String[size()];
+        String[] pattern = new String[nodeList.size()];
         Node[] nList = getNodeList();
         int i;
         
         //Prepare pattern array
-        for (i = 0; i < size(); i++) {
+        for (i = 1; i <= size(); i++) {
             pattern[i] = "%" + Integer.toString(nList[i].name.length() + 2) + "s";
         }
         
         //First line: node name
-        for (i = 0; i < size(); i++) {
+        for (i = 1; i <= size(); i++) {
             result += String.format(pattern[i], nList[i].name);         
         }
         result += System.lineSeparator();
         
         //Second line: node type
-        for (i = 0; i < size(); i++) {
+        for (i = 1; i <= size(); i++) {
             result += String.format(pattern[i], nList[i].type.charAt(0));
         }
         result += System.lineSeparator();
         
         //Third line: node state
-        for (i = 0; i < size(); i++) {
+        for (i = 1; i <= size(); i++) {
             result += String.format(pattern[i], nList[i].state);
         }
         result += System.lineSeparator();
@@ -110,7 +128,9 @@ public class NodeList implements Iterable<Node>{
         NodeList copy = new NodeList();
         
         for (Node s : getNodeList()) {
-            copy.set(s.clone());
+            if (s != null) {
+                copy.add(s.clone());
+            }
         }
         
         return copy;

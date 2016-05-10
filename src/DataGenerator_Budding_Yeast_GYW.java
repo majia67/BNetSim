@@ -24,17 +24,17 @@ public class DataGenerator_Budding_Yeast_GYW {
         Relationship relat = new Relationship();
         
         //Insert node information
-        nList.set(new Node("Cln3", on));
-        nList.set(new Node("MBF", off));
-        nList.set(new Node("SBF", off));
-        nList.set(new Node("Cln1,2", off));
-        nList.set(new Node("Cdh1", on));
-        nList.set(new Node("Swi5", off));
-        nList.set(new Node("Cdc20/14", off));
-        nList.set(new Node("Clb5,6", off));
-        nList.set(new Node("Sic1", on));
-        nList.set(new Node("Clb1,2", off));
-        nList.set(new Node("Mcm1/SFF", off));
+        nList.add(new Node("Cln3", on));
+        nList.add(new Node("MBF", off));
+        nList.add(new Node("SBF", off));
+        nList.add(new Node("Cln1,2", off));
+        nList.add(new Node("Cdh1", on));
+        nList.add(new Node("Swi5", off));
+        nList.add(new Node("Cdc20/14", off));
+        nList.add(new Node("Clb5,6", off));
+        nList.add(new Node("Sic1", on));
+        nList.add(new Node("Clb1,2", off));
+        nList.add(new Node("Mcm1/SFF", off));
 
         relat.set("Cln3", "Cln3", selfInhibition);
         relat.set("Cln3", "MBF", positive);

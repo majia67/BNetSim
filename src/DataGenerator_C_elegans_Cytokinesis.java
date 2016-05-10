@@ -12,45 +12,49 @@ import java.io.File;
 public class DataGenerator_C_elegans_Cytokinesis {
     
     private static String fileName = "data" + File.separator + 
-                                     "C_elegans_Cytokinesis.txt";
+                                     "C_elegans_Cytokinesis";
     private static int POSI                 = 1;
     private static int NEGA                 = -100;
     private static int SELFINHIB            = -1;
-    private static int ON                   = 1;
-    private static int OFF                  = 0;
+    private static int ON                   = Node.ON;
+    private static int OFF                  = Node.OFF;
     
     public static void main(String[] args) {
         NodeList nList = new NodeList();
         Relationship relat = new Relationship();
         
         //Insert node information
-        nList.set(new Node("CYK-4", ON));
-        nList.set(new Node("ZEN-4", OFF));
-        nList.set(new Node("NOP-1", OFF));
-        nList.set(new Node("ECT-2", OFF));
-        nList.set(new Node("RGA-3/4", OFF));
-        nList.set(new Node("RhoA(GDP)", OFF));
-        nList.set(new Node("RhoA(GTP)", OFF));
-        nList.set(new Node("ANI-1", OFF));
-        nList.set(new Node("F-Actin", OFF));
-        nList.set(new Node("CenSpindlin", OFF));
-        nList.set(new Node("KIF4", OFF));
-        nList.set(new Node("PRC1", OFF));
-        nList.set(new Node("CenSpinMt", OFF));
-        nList.set(new Node("AstralMt", OFF));
-        nList.set(new Node("Plk1", OFF));
-        nList.set(new Node("Cdk1", OFF));
-        nList.set(new Node("ROCK", OFF));
-        nList.set(new Node("Profilin", OFF));
-        nList.set(new Node("LET-502", OFF));
-        nList.set(new Node("MEL-11", OFF));
-        nList.set(new Node("NMY-2", OFF));
-        nList.set(new Node("NMY-2(P)", OFF));
-        nList.set(new Node("MLC-4", OFF));
-        nList.set(new Node("MLC-4(P)", OFF));
-        nList.set(new Node("CYK-1", OFF));
-        nList.set(new Node("ContrRing", OFF));
-        nList.set(new Node("CleaFurContr", OFF));
+        Node nd;
+        nList.add(new Node("CYK-4", ON));
+        nList.add(new Node("ZEN-4", OFF));
+        nList.add(new Node("NOP-1", OFF));
+        nList.add(new Node("ECT-2", OFF));
+        nList.add(new Node("RGA-3/4", OFF));
+        nList.add(new Node("RhoA(GDP)", OFF));
+        nList.add(new Node("RhoA(GTP)", OFF));
+        nList.add(new Node("ANI-1", OFF));
+        nList.add(new Node("F-Actin", OFF));
+        nd = new Node("CenSpindlin", OFF);
+        nd.setRequires("CYK-4", ON);
+        nd.setRequires("ZEN-4", ON);
+        nList.add(nd);
+        nList.add(new Node("KIF4", OFF));
+        nList.add(new Node("PRC1", OFF));
+        nList.add(new Node("CenSpinMt", OFF));
+        nList.add(new Node("AstralMt", OFF));
+        nList.add(new Node("Plk1", OFF));
+        nList.add(new Node("Cdk1", OFF));
+        nList.add(new Node("ROCK", OFF));
+        nList.add(new Node("Profilin", OFF));
+        nList.add(new Node("LET-502", OFF));
+        nList.add(new Node("MEL-11", OFF));
+        nList.add(new Node("NMY-2", OFF));
+        nList.add(new Node("NMY-2(P)", OFF));
+        nList.add(new Node("MLC-4", OFF));
+        nList.add(new Node("MLC-4(P)", OFF));
+        nList.add(new Node("CYK-1", OFF));
+        nList.add(new Node("ContrRing", OFF, "Milestone", false));
+        nList.add(new Node("CleaFurContr", OFF, "Milestone", true));
         
 
         relat.set("CYK-4", "CenSpindlin", POSI);
