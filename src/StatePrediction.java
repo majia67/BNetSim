@@ -19,14 +19,15 @@ public class StatePrediction {
         System.out.println(network.printNode());
         for (int i = 0; i < maxRound; i ++) {
             network.next();
-            if (!network.hasChanged() || network.hasTerminated()) {
-                System.out.println("Network remains stable.");
-                System.out.println(network.printNode());
+            System.out.println("Loop " + network.getLoop());
+            System.out.println(network.printNode());
+            if (!network.hasChanged()) {
+                System.out.println("Simulation remains stable.");
                 break;
             }
-            else {
-                System.out.println("Loop " + network.getLoop());
-                System.out.println(network.printNode());
+            else if(network.hasTerminated()) {
+                System.out.println("Simulation is terminated.");
+                break;
             }
         }
     }

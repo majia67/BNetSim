@@ -214,6 +214,11 @@ public class Network {
         NodeList oldNode = nodeList.clone();
         
         for (Node s : nodeList) {
+            //Skip activated milestone
+            if (s.type.equals("Milestone") && s.state == Node.ON) {
+                continue;
+            }
+            //Calculate Boolean function value of node s
             int score = 0;
             for (Node t : nodeList) {
                 if (oldNode.get(t.name).state == Node.ON && 

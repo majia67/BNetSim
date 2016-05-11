@@ -10,8 +10,7 @@ public class Node {
     //Definition for Requirements
     Hashtable<String, Integer> requires;
     
-    //Definition for Milestone 
-    boolean milestone_hasChanged = false;
+    //Definition for Milestone
     boolean milestone_termination;
     
     public static final int ON = 1;
