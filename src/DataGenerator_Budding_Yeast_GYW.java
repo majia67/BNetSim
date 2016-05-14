@@ -71,7 +71,8 @@ public class DataGenerator_Budding_Yeast_GYW {
         relat.set("Mcm1/SFF", "Mcm1/SFF", selfInhibition);
         
         Network net = new Network(nList, relat);
-        net.writeFile(fileName);
+        Pajek pj = new Pajek();
+        pj.writeFile(fileName, net);
     }
 
 }

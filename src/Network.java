@@ -1,3 +1,5 @@
+import java.util.Map.Entry;
+
 /*
  *  Undergraduate Project: State Prediction
  *  CopyRight: Yicong Tao, 2016
@@ -5,16 +7,6 @@
  *  This Class defines the boolean network structure used in the main project
  *  
  */
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Hashtable;
-import java.util.Map.Entry;
-import java.util.Scanner;
 
 public class Network {
     
@@ -30,15 +22,10 @@ public class Network {
         hasTerminated = false;
     }
     
-    public Network(String file) {
-        this();
-        this.readFile(file);
-    }
-    
     public Network(NodeList nList, Relationship relat) {
         this();
-        nodeList = nList;
-        relationship = relat;
+        nodeList = nList.clone();
+        relationship = relat.clone();
         
         //Verify the network is constructed correctly
         for (Node s : nodeList) {
@@ -53,157 +40,7 @@ public class Network {
         }
     }
     
-    private void readFileHelper(String file) throws FileNotFoundException {
-        Scanner sc = new Scanner(new BufferedReader(new FileReader(file)));
-        String line = null;
-        String mode = null;
-        String modePattern = "\\*(\\w+)";
-        while (sc.hasNext()) {
-            line = sc.findInLine(modePattern);
-            if (line != null) { 
-                mode = line;
-                sc.nextLine();
-                continue;
-            }
-            switch (mode) {
-            case "*Vertices":
-                Node s = new Node();
-                sc.nextInt();
-                s.name = sc.next();
-                nodeList.add(s);
-                break;
-            case "*Arcs":
-                Node na = nodeList.get(sc.nextInt());
-                Node nb = nodeList.get(sc.nextInt());
-                int relat = sc.nextInt();
-                relationship.set(na.name, nb.name, relat);
-                break;
-            case "*States":
-                na = nodeList.get(sc.nextInt());
-                na.state = sc.nextInt();
-                break;
-            case "*Types":
-                na = nodeList.get(sc.nextInt());
-                String type = sc.next();
-                na.type = type;
-                break;
-            case "*Requirements":
-                na = nodeList.get(sc.nextInt());
-                nb = nodeList.get(sc.nextInt());
-                int state = sc.nextInt();
-                na.setRequires(nb.name, state);
-                break;
-            case "*Milestone":
-                na = nodeList.get(sc.nextInt());
-                na.milestone_termination = sc.nextBoolean();
-                break;
-            }
-            sc.nextLine();
-        }
-        sc.close();
-    }
-    
-    private void readFile(String prefix) {
-
-        nodeList = new NodeList();
-        relationship = new Relationship();
-        
-        try {
-            
-            readFileHelper(prefix + ".net");
-            readFileHelper(prefix + ".bns");
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-    
-    /*
-     * Write the network structure into file with compliance to Pajek format
-     */
-    public void writeFile(String prefix) {
-        try {
-
-            String[] vertices = nodeList.getNameList();
-            
-            //=== Write .net Network file ===
-            BufferedWriter writer = new BufferedWriter(
-                    new FileWriter(prefix + ".net"));
-            
-            //Write Vertices
-            writer.write("*Vertices " + Integer.toString(nodeList.size()));
-            writer.newLine();
-            for (int i = 1; i <= nodeList.size(); i++) {
-                writer.write(i + "\t" + vertices[i]);
-                writer.newLine();
-            }
-            
-            //Write Arcs
-            writer.write("*Arcs");
-            writer.newLine();
-            for (int i = 1; i <= nodeList.size(); i++) {
-                if (relationship.getNodeList(vertices[i]) == null) { continue; }
-                for (int j = 1; j <= nodeList.size(); j++) {
-                    if (relationship.get(vertices[i], vertices[j]) != null) {
-                        writer.write(i + "\t" + j + "\t" + relationship.get(vertices[i], vertices[j]));
-                        writer.newLine();                        
-                    }
-                }
-            }
-            
-            writer.close();
-
-            //=== Write .bns BNetSim file ===
-            writer = new BufferedWriter(
-                    new FileWriter(prefix + ".bns"));
-            
-            //Write States
-            writer.write("*States");
-            writer.newLine();
-            for (int i = 1; i <= nodeList.size(); i++) {
-                writer.write(i + "\t" + nodeList.get(i).state);
-                writer.newLine();
-            }
-            
-            //Write Types
-            writer.write("*Types");
-            writer.newLine();
-            for (int i = 1; i <= nodeList.size(); i++) {
-                writer.write(i + "\t" + nodeList.get(i).type);
-                writer.newLine();
-            }
-            
-            //Write Requirements
-            writer.write("*Requirements");
-            writer.newLine();
-            for (int i = 1; i <= nodeList.size(); i++) {
-                Hashtable<String, Integer> req = nodeList.get(i).requires;
-                if (req != null) {
-                    for (String s : req.keySet()) {
-                        writer.write(i + "\t" + (nodeList.getIndex(s)) + "\t" + req.get(s));
-                        writer.newLine();
-                    }
-                }
-            }
-            
-            //Write Milestone
-            writer.write("*Milestone");
-            writer.newLine();
-            for (int i = 1; i <= nodeList.size(); i++) {
-                if (nodeList.get(i).type == "Milestone") {
-                    writer.write(i + "\t" + nodeList.get(i).milestone_termination);
-                    writer.newLine();
-                }
-            }
-            
-            writer.close();
-            
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    
-    public void next() {
+    public boolean next() {
         /*
          * Calculate the next state of the network nodes according to the given
          * network relation. Use the state transition equation described in
@@ -211,6 +48,7 @@ public class Network {
         */
         loop ++;
         hasChanged = false;
+        boolean reachMilestone = false;
         NodeList oldNode = nodeList.clone();
         
         for (Node s : nodeList) {
@@ -240,11 +78,14 @@ public class Network {
                         }
                     }
                     if (meetRequirements) {
+                        if (s.name == "ROCK") {
+                            System.err.println(oldNode.get("MLC-4").state);
+                        }
                         s.state = Node.ON;
                     }
                 }
                 else {
-                    s.state = Node.ON;                
+                    s.state = Node.ON;
                 }
             }
             else if (score < 0) {
@@ -257,10 +98,14 @@ public class Network {
             }
             
             //Check if Milestone with termination is activated
-            if (s.type.equals("Milestone") && s.milestone_termination && s.state == Node.ON) {
-                hasTerminated = true;
+            if (s.type.equals("Milestone") && s.state == Node.ON) {
+                reachMilestone = true;
+                if (s.milestone_termination)
+                    hasTerminated = true;
             }
         }
+        
+        return reachMilestone;
     }
     
     public NodeList getNodeList() {
@@ -287,8 +132,35 @@ public class Network {
         return nodeList.toString();
     }
     
+    public String printState() {
+        String result = new String();
+        Node[] nList = nodeList.getNodeList();
+        String[] pattern = new String[nList.length];
+        int i;
+        
+        //Prepare pattern array
+        for (i = 1; i <= nodeList.size(); i++) {
+            pattern[i] = "%" + Integer.toString(nList[i].name.length() + 2) + "s";
+        }
+        
+        //Third line: node state
+        for (i = 1; i <= nodeList.size(); i++) {
+            result += String.format(pattern[i], nList[i].state);
+        }
+        
+        return result;
+    }
+    
     public String printRelationship() {
         return relationship.toString();
+    }
+    
+    public String getNodeStateString() {
+        String result = new String();
+        for (Node s : nodeList) {
+            result += Integer.toString(s.state);
+        }
+        return result;
     }
     
     public String toString() {
@@ -303,9 +175,4 @@ public class Network {
         return result;
     }
     
-    public static void main(String[] args) {
-        //Unit Test
-//        Network net = new Network();
-//        net.writeFile("data/test.txt");
-    }
 }

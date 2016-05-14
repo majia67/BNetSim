@@ -32,7 +32,7 @@ public class DataGenerator_C_elegans_Cytokinesis {
         nList.add(new Node("RGA-3/4", ON));
         nList.add(new Node("RhoA(GDP)", ON));
         nList.add(new Node("RhoA(GTP)", OFF));
-        nList.add(new Node("ANI-1(Cortex)", OFF));
+        nList.add(new Node("ANI-1(Cortex)", ON));
         nList.add(new Node("ANI-1(CenSpin)", OFF));
         nList.add(new Node("F-Actin", OFF));
         nd = new Node("CenSpindlin", OFF);
@@ -126,7 +126,8 @@ public class DataGenerator_C_elegans_Cytokinesis {
         relat.set("ContrRing", "LET-502", POSI);
 
         Network net = new Network(nList, relat);
-        net.writeFile(fileName);
+        Pajek pj = new Pajek();
+        pj.writeFile(fileName, net);
     }
 
 }

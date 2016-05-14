@@ -11,7 +11,8 @@ public class StatePrediction {
     Network network;
     
     public StatePrediction(String file) {
-        network = new Network(file);
+        Pajek pj = new Pajek();
+        network = pj.readFile(file);
     }
     
     public void run(int maxRound) {
@@ -19,13 +20,13 @@ public class StatePrediction {
         System.out.println(network.printNode());
         for (int i = 0; i < maxRound; i ++) {
             network.next();
-            System.out.println("Loop " + network.getLoop());
-            System.out.println(network.printNode());
+            //System.out.println("Loop " + network.getLoop());
+            System.out.println(network.printState());
             if (!network.hasChanged()) {
                 System.out.println("Simulation remains stable.");
                 break;
             }
-            else if(network.hasTerminated()) {
+            if(network.hasTerminated()) {
                 System.out.println("Simulation is terminated.");
                 break;
             }

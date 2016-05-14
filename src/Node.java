@@ -1,4 +1,5 @@
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 public class Node {
     
@@ -8,7 +9,7 @@ public class Node {
     String type;
     
     //Definition for Requirements
-    Hashtable<String, Integer> requires;
+    HashMap<String, Integer> requires;
     
     //Definition for Milestone
     boolean milestone_termination;
@@ -41,7 +42,7 @@ public class Node {
     
     public boolean setRequires(String na, Integer st) {
         if (na != null && st != null) {
-            if (requires == null) { requires = new Hashtable<String, Integer>(); }
+            if (requires == null) { requires = new HashMap<String, Integer>(); }
             requires.put(na, st);
             return true;
         }
@@ -49,7 +50,12 @@ public class Node {
     }
     
     public Node clone() {
-        Node cl = new Node(name, state, type);
+        Node cl = new Node(name, state, type, milestone_termination);
+        if (this.requires != null) {
+            for (Entry<String, Integer> t : this.requires.entrySet()) {
+                cl.setRequires(t.getKey(), t.getValue());
+            }
+        }
         return cl;
     }
 }

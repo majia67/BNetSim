@@ -6,16 +6,16 @@
  *  
  */
 import java.util.ArrayList;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Iterator;
 
 public class NodeList implements Iterable<Node>{
     
-    private Hashtable<String, Integer> indexTable;
+    private HashMap<String, Integer> indexTable;
     private ArrayList<Node> nodeList;
     
     public NodeList() {
-        indexTable = new Hashtable<String, Integer>();
+        indexTable = new HashMap<String, Integer>();
         nodeList = new ArrayList<Node>();
         nodeList.add(null);     //Set starting index from 1
     }
@@ -88,6 +88,10 @@ public class NodeList implements Iterable<Node>{
                 return nodeList.get(index++);
             }
             
+            @Override
+            public void remove() {
+                throw new java.lang.UnsupportedOperationException();
+            }
         };
     }
     

@@ -1,14 +1,14 @@
-import java.util.Hashtable;
+import java.util.HashMap;
 
 //2-dim matrix, >0: positive; <0: negative; 
 //0: no relationship between the two nodes
 
 public class Relationship{
     
-    private Hashtable<String, Hashtable<String, Integer>> relat;
+    private HashMap<String, HashMap<String, Integer>> relat;
     
     public Relationship() {
-        relat = new Hashtable<String, Hashtable<String, Integer>>();
+        relat = new HashMap<String, HashMap<String, Integer>>();
     }
     
     public Integer get(String s, String t) {
@@ -20,7 +20,7 @@ public class Relationship{
     
     public void set(String s, String t, Integer effect) {
         if (!relat.containsKey(s)) {
-            relat.put(s, new Hashtable<String, Integer>());
+            relat.put(s, new HashMap<String, Integer>());
         }
         relat.get(s).put(t, effect);
     }
