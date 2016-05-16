@@ -21,7 +21,7 @@ public class DataGenerator_Budding_Yeast_GYW {
     
     public static void main(String[] args) {
         NodeList nList = new NodeList();
-        Relationship relat = new Relationship();
+        RelationshipMap relat = new RelationshipMap();
         
         //Insert node information
         nList.add(new Node("Cln3", on));

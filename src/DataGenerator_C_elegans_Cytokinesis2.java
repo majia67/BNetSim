@@ -9,7 +9,7 @@ import java.io.File;
  *  
  */
 
-public class DataGenerator_C_elegans_Cytokinesis {
+public class DataGenerator_C_elegans_Cytokinesis2 {
     
     private static String fileName = "data" + File.separator + 
                                      "C_elegans_Cytokinesis";
@@ -47,28 +47,45 @@ public class DataGenerator_C_elegans_Cytokinesis {
         nd.setRequires("CenSpindlin", ON);
         nList.add(nd);
         nList.add(new Node("CDK-1", ON));
-        nList.add(new Node("ROCK", OFF));
+        
+        nd = new Node("ROCK", OFF);
+        nd.setRequires("ContrRing", ON);
+        nList.add(nd);
+        
         nList.add(new Node("Profilin", OFF));
-        nList.add(new Node("LET-502", OFF));
-        nList.add(new Node("MEL-11", ON));
+        
+        nd = new Node("LET-502", OFF);
+        nd.setRequires("ContrRing", ON);
+        nList.add(nd);
+        
+        nd = new Node("MEL-11", ON);
+        nd.setRequires("ContrRing", ON);
+        nList.add(nd);
+        
         nList.add(new Node("NMY-2", OFF));
+        
         nd = new Node("NMY-2(P)", OFF);
         nd.setRequires("NMY-2", ON);
         nList.add(nd);
+        
         nd = new Node("MLC-4", OFF);
         nd.setRequires("NMY-2", ON);
         nList.add(nd);
+        
         nd = new Node("MLC-4(P)", OFF);
         nd.setRequires("MLC-4", ON);
         nList.add(nd);
+        
         nList.add(new Node("CYK-1", OFF));
         nList.add(new Node("AnaOnset", ON, "Milestone", false));
+        
         nd = new Node("ContrRing", OFF, "Milestone", false);
         nd.setRequires("MLC-4", ON);
         nd.setRequires("NMY-2", ON);
         nd.setRequires("F-Actin", ON);
         nd.setRequires("CYK-1", ON);
         nList.add(nd);
+        
         nd = new Node("CleaFurContr", OFF, "Milestone", true);
         nd.setRequires("ContrRing", ON);
         nList.add(nd);        
