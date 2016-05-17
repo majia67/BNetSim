@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 //2-dim matrix, >0: positive; <0: negative; 
 //0: no relationship between the two nodes
 
@@ -17,4 +19,11 @@ public class Relationship{
         relat[s][t] = effect;
     }
 
+    public String toString() {
+        String result = new String();
+        for (int[] t : relat) {
+            result += Arrays.toString(t) + System.lineSeparator();
+        }
+        return result;
+    }
 }

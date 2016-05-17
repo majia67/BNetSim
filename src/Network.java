@@ -14,12 +14,22 @@ public class Network {
     private boolean hasChanged;
     private boolean hasTerminated;
     private boolean hasReachedMilestone;
+    private boolean[] isMilestone;
+    private int sizeOfNetwork;
     
     public Network(NodeList nodeList, Relationship relationship) {
         nodes = nodeList;
         relat = relationship;
+        System.err.println(relat);
         hasChanged = false;
         hasTerminated = false;
+        sizeOfNetwork = nodes.size();
+        isMilestone = new boolean[sizeOfNetwork];
+        for (int i = 0; i < sizeOfNetwork; i++) {
+            if (nodes.get(i).type.equals("Milestone")) {
+                isMilestone[i] = true;
+            }
+        }
     }
     
     public void next() {
@@ -33,10 +43,10 @@ public class Network {
         hasTerminated = false;
         int[] oldState = nodes.getNodeStates();
         
-        for (int i = 0; i < nodes.size(); i++) {
+        for (int i = 0; i < sizeOfNetwork; i++) {
             Node s = nodes.get(i);
             //Skip activated milestone
-            if (s.type.equals("Milestone") && s.state == Node.ON) {
+            if (isMilestone[i] && oldState[i] == Node.ON) {
                 continue;
             }
             //Calculate Boolean function value of node s
@@ -53,14 +63,14 @@ public class Network {
             if (score > 0) {
                 if (s.depends != null) {
                     //Check requirements before setting node state
-                    boolean meetRequirements = true;
+                    boolean meetDependencies = true;
                     for (int j : s.depends) {
-                        if (nodes.get(j).state != Node.ON) {
-                            meetRequirements = false;
+                        if (oldState[j] != Node.ON) {
+                            meetDependencies = false;
                             break;
                         }
                     }
-                    if (meetRequirements) {
+                    if (meetDependencies) {
                         s.state = Node.ON;
                     }
                 }
@@ -76,7 +86,7 @@ public class Network {
             if (s.state != oldState[i]) {
                 hasChanged = true;
                 //Check if Milestone is activated at the first time
-                if (s.type.equals("Milestone") && s.state == Node.ON) {
+                if (isMilestone[i] && s.state == Node.ON) {
                     hasReachedMilestone = true;
                     //Check if Milestone with termination is activated
                     if (s.milestoneTermination)

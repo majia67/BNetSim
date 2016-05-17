@@ -16,6 +16,8 @@ public class StatePrediction {
     }
     
     public void run(int maxRound) {
+        int[] testState = {1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0};
+        network.setNodeStates(testState);
         System.out.println("Original state");
         System.out.println(network.printNode());
         for (int i = 0; i < maxRound; i ++) {

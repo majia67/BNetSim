@@ -43,24 +43,28 @@ public class Pajek {
                 int idx = sc.nextInt() - 1;
                 Node s = new Node(sc.next());
                 nodes.set(idx, s);
+                sc.nextLine();
                 break;
             case "*Arcs":
                 int na = sc.nextInt() - 1;
                 int nb = sc.nextInt() - 1;
                 int effect = sc.nextInt();
                 relat.set(na, nb, effect);
+                sc.nextLine();
                 break;
             case "*States":
                 s = nodes.get(sc.nextInt() - 1);
                 s.state = sc.nextInt();
+                sc.nextLine();
                 break;
             case "*Types":
                 s = nodes.get(sc.nextInt() - 1);
                 String type = sc.next();
                 s.type = type;
+                sc.nextLine();
                 break;
             case "*Dependencies":
-                String tmp = sc.next();
+                String tmp = sc.nextLine();
                 String[] rlt = tmp.split(" ");
                 int[] dpd = new int[rlt.length - 1];
                 for (int i = 0; i < dpd.length; i++) {
@@ -72,9 +76,9 @@ public class Pajek {
             case "*Milestones":
                 s = nodes.get(sc.nextInt() - 1);
                 s.milestoneTermination = sc.nextBoolean();
+                sc.nextLine();
                 break;
             }
-            sc.nextLine();
         }
         sc.close();
     }
@@ -242,7 +246,7 @@ public class Pajek {
             writer.write("*Arcs");
             writer.newLine();
             for (int i = 0; i < result.length; i++) {
-                writer.write((i+1) + " " + index.get(resultMap.get(result[i])) + " 1");
+                writer.write((i+1) + " " + (index.get(resultMap.get(result[i]))+1) + " 1");
                 writer.newLine();    
             }
 

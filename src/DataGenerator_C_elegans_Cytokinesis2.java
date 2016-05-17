@@ -47,7 +47,7 @@ public class DataGenerator_C_elegans_Cytokinesis2 {
         nd.setRequires("CenSpindlin", ON);
         nList.add(nd);
         nList.add(new Node("CDK-1", ON));
-        
+        nd.setDependency({1, 3, 5});
         nd = new Node("ROCK", OFF);
         nd.setRequires("ContrRing", ON);
         nList.add(nd);

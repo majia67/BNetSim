@@ -5,6 +5,7 @@ public class RobustnessTest {
     private Network net;
     private HashMap<String, String> result;
     private int[] states;
+    private boolean[] isMilestone;
     private int sizeOfNetwork;
     private int[] reasonOfStop;
     //    private long[] loop_counter;
@@ -24,9 +25,16 @@ public class RobustnessTest {
         totalTestNum = (int) Math.pow(2, net.size() - net.getMilestoneNodesNum());
         onePercent = totalTestNum / 100;
 
-        result = new HashMap<String, String>(totalTestNum);
+        result = new HashMap<String, String>();
         states = net.getNodeStates();
-
+        
+        isMilestone = new boolean[sizeOfNetwork];
+        for (int i = 0; i < sizeOfNetwork; i++) {
+            if (net.getNode(i).type.equals("Milestone")) {
+                isMilestone[i] = true;
+            }
+        }
+        
         reasonOfStop = new int[STOP_REASON.length];
         //        loop_counter = new long[MAXROUND+1];
         
@@ -55,7 +63,7 @@ public class RobustnessTest {
 
         }
         else {
-            if (net.getNode(index).type.equals("Milestone")) {
+            if (isMilestone[index]) {
                 generator(index + 1);
             }
             else {
