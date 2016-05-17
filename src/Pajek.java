@@ -11,7 +11,11 @@ public class Pajek {
 
     //Definitions for PAJEK file
     public static String VERTEX_SHAPE = "ellipse";
+    public static String VERTEX_COLOR = "LightGreen";
+    public static int VERTEX_SIZE = 1;
     public static String MILESTONE_SHAPE = "diamond";
+    public static String MILESTONE_COLOR = "Red";
+    public static int MILESTONE_SIZE = 10;
     public static String ARCS_POSI_PATTERN = "Solid";
     public static String ARCS_POSI_COLOR = "OliveGreen";
     public static String ARCS_NEGA_PATTERN = "Solid";
@@ -220,33 +224,30 @@ public class Pajek {
         }
     }
 
-    public void writeRobustnessTestResult(String filePrefix, HashMap<String, String> resultMap, int[] terminatedMilestone) {
-
-        String[] result = resultMap.keySet().toArray(new String[0]);
-        HashMap<String, Integer> index = new HashMap<String, Integer>();
+    public void writeRobustnessTestResult(String filePrefix, Network net, int[] result) {
 
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(filePrefix + ".net"));
+            int sizeOfNetwork = net.size();
             //Write Vertices
-            writer.write("*Vertices " + Integer.toString(result.length));
+            writer.write("*Vertices " + RobustnessTest.totalTestNum(net));
             writer.newLine();
             for (int i = 0; i < result.length; i++) {
-                writer.write((i+1) + " " + result[i]);
-                for (int s : terminatedMilestone) {
-                    if (result[i].charAt(s) == '1') {
-                        writer.write(" "+ MILESTONE_SHAPE);
-                        break;
-                    }
+                writer.write((i+1) + " " + RobustnessTest.d2b(i, sizeOfNetwork));
+                if (result[i] == i) {
+                    writer.write(" "+ MILESTONE_SHAPE + " s_size " + MILESTONE_SIZE + " ic " + MILESTONE_COLOR);
+                }
+                else {
+                    writer.write(" "+ VERTEX_SHAPE + " s_size " + VERTEX_SIZE + " ic " + VERTEX_COLOR);
                 }
                 writer.newLine();
-                index.put(result[i], i);
             }
 
             //Write Arcs
             writer.write("*Arcs");
             writer.newLine();
             for (int i = 0; i < result.length; i++) {
-                writer.write((i+1) + " " + (index.get(resultMap.get(result[i]))+1) + " 1");
+                writer.write((i+1) + " " + (result[i]+1) + " 1");
                 writer.newLine();    
             }
 

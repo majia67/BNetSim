@@ -1,9 +1,9 @@
-import java.util.HashMap;
+import java.util.Arrays;
 
 public class RobustnessTest {
 
     private Network net;
-    private HashMap<String, String> result;
+    private int[] result;
     private int[] states;
     private boolean[] isMilestone;
     private int sizeOfNetwork;
@@ -22,10 +22,14 @@ public class RobustnessTest {
         net = pj.readFile(file);
         sizeOfNetwork = net.size();
         progress = 0;
-        totalTestNum = (int) Math.pow(2, net.size() - net.getMilestoneNodesNum());
+        totalTestNum = totalTestNum(net);
         onePercent = totalTestNum / 100;
-
-        result = new HashMap<String, String>();
+        
+        result = new int[totalTestNum];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = -1;
+        }
+        
         states = net.getNodeStates();
         
         isMilestone = new boolean[sizeOfNetwork];
@@ -63,23 +67,39 @@ public class RobustnessTest {
 
         }
         else {
-            if (isMilestone[index]) {
-                generator(index + 1);
-            }
-            else {
+//            if (isMilestone[index]) {
+//                generator(index + 1);
+//            }
+//            else {
                 states[index] = 0;
                 generator(index + 1);
                 states[index] = 1;
                 generator(index + 1);
-            }
+//            }
         }
     }
-
+    
+    public static int b2d(String binaryString) {
+        return Integer.parseInt(binaryString, 2);
+    }
+    
+    public static String d2b(int decimal, int length) {
+        String binString = Integer.toBinaryString(decimal);
+        char[] padArray = new char[length - binString.length()];
+        Arrays.fill(padArray, '0');
+        String padString = new String(padArray);
+        return padString + binString;
+    }
+    
+    public static int totalTestNum(Network net) {
+        return (int) Math.pow(2, net.size());
+    }
+    
     public int run() {
         String oldState = net.getNodeStateString();
         for (int i = 0; i < MAXROUND; i++) {
             
-            if (result.containsKey(oldState)) {
+            if (result[b2d(oldState)] != -1) {
                 return 1;
             }
             
@@ -87,7 +107,7 @@ public class RobustnessTest {
 
             //Record simulation result
             String newState = net.getNodeStateString();
-            result.put(oldState, newState);
+            result[b2d(oldState)] = b2d(newState);
             oldState = newState;
 
             if (!net.hasChanged()) {
@@ -120,7 +140,7 @@ public class RobustnessTest {
 
         System.out.println("Export Pajek network file...");
         Pajek pj = new Pajek();
-        pj.writeRobustnessTestResult(fileName, result, net.getMilestoneNodesIndex(true));
+        pj.writeRobustnessTestResult(fileName, net, result);
         System.out.println("Complete!");
 
     }

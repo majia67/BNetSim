@@ -20,7 +20,6 @@ public class Network {
     public Network(NodeList nodeList, Relationship relationship) {
         nodes = nodeList;
         relat = relationship;
-        System.err.println(relat);
         hasChanged = false;
         hasTerminated = false;
         sizeOfNetwork = nodes.size();
