@@ -50,6 +50,10 @@ public class NodeList implements Iterable<Node>{
         }
     }
     
+    public void set(int index, String name) {
+        set(index, new Node(name));
+    }
+    
     public void set(String name, Node node) {
         set(getIndex(name), node);
     }
@@ -66,6 +70,10 @@ public class NodeList implements Iterable<Node>{
         nodes[index].state = state;
     }
     
+    public void setNodeState(String name, int state) {
+        setNodeState(getIndex(name), state);
+    }
+    
     public void setNodeStates(int[] states) {
         for (int i = 0; i < size(); i++) {
             nodes[i].state = states[i];
@@ -74,6 +82,15 @@ public class NodeList implements Iterable<Node>{
     
     public Node[] getNodeList() {
         return nodes;
+    }
+    
+    public void setDependency(String node, String[] dependencies) {
+        Node nd = get(node);
+        int[] dep = new int[dependencies.length];
+        for (int i = 0; i < dep.length; i++) {
+            dep[i] = getIndex(dependencies[i]);
+        }
+        nd.setDependency(dep);
     }
     
     public int size() {
@@ -112,6 +129,11 @@ public class NodeList implements Iterable<Node>{
             }
         }
         return rlt;
+    }
+    
+    public void setMilestone(String node, boolean milestoneTermination) {
+        Node nd = get(node);
+        nd.setMilestone(milestoneTermination);
     }
     
     @Override

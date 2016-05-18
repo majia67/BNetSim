@@ -18,8 +18,9 @@ class Attractor {
 public class NetworkAnalysis {
     
     private int size;
-    private String[] nodeName;
+//    private String[] nodeName;
     private int[] net;
+    private int length;
     
     public NetworkAnalysis(String fileName) {
         readFile(fileName);
@@ -34,10 +35,13 @@ public class NetworkAnalysis {
             size = sc.nextInt();
             sc.nextLine();
             
-            nodeName = new String[size];
-            for (int i = 0; i < size; i++) {
-                sc.nextInt();
-                nodeName[i] = sc.next();
+            sc.nextInt();
+            length = sc.next().length();
+            sc.nextLine();
+//            nodeName = new String[size];
+            for (int i = 1; i < size; i++) {
+//                sc.nextInt();
+//                nodeName[i] = sc.next();
                 sc.nextLine();
             }
             
@@ -81,7 +85,8 @@ public class NetworkAnalysis {
         for (Entry<Integer, Attractor> a : attr.entrySet()) {
             int idx = a.getKey();
             int count = a.getValue().count;
-            System.out.println(nodeName[idx] + " : " + count);
+//            System.out.println(nodeName[idx] + " : " + count);
+            System.out.println(RobustnessTest.d2b(idx, length) + " : " + count);
         }
     }
     
