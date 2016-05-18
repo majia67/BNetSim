@@ -64,7 +64,7 @@ public class Budding_Yeast_Cell_Cycle {
         ng.setRelationship("Mcm1/SFF", "Clb1,2", positive);
         ng.setRelationship("Mcm1/SFF", "Mcm1/SFF", selfInhibition);
         
-        ng.writeFile(fileName);
+        ng.writeFile(fileName, false);
     }
 
 }

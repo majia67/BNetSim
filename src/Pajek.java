@@ -21,11 +21,18 @@ public class Pajek {
     public static String ARCS_NEGA_PATTERN = "Solid";
     public static String ARCS_NEGA_COLOR = "Red";
 
-    private NodeList nodes;
-    private Relationship relat;
-    private int vertexNumber = 0; 
-
-    private void readFileHelper(String file) throws FileNotFoundException {
+    private static NodeList nodeList;
+    private static Relationship relationship;
+    private static Node[] vertices;
+    private static int vertexNumber = 0; 
+    
+    public Pajek(Network network) {
+        nodeList = network.getNodeList();
+        relationship = network.getRelationship();
+        vertices = nodeList.getNodeList();
+    }
+    
+    private static void readFileHelper(String file) throws FileNotFoundException {
         Scanner sc = new Scanner(new BufferedReader(new FileReader(file)));
         String line = null;
         String mode = null;
@@ -36,8 +43,8 @@ public class Pajek {
                 mode = line;
                 if (mode.equals("*Vertices")) {
                     vertexNumber = sc.nextInt();
-                    nodes = new NodeList(vertexNumber);
-                    relat = new Relationship(vertexNumber);
+                    nodeList = new NodeList(vertexNumber);
+                    relationship = new Relationship(vertexNumber);
                 }
                 sc.nextLine();
                 continue;
@@ -46,23 +53,23 @@ public class Pajek {
             case "*Vertices":
                 int idx = sc.nextInt() - 1;
                 Node s = new Node(sc.next());
-                nodes.set(idx, s);
+                nodeList.set(idx, s);
                 sc.nextLine();
                 break;
             case "*Arcs":
                 int na = sc.nextInt() - 1;
                 int nb = sc.nextInt() - 1;
                 int effect = sc.nextInt();
-                relat.set(na, nb, effect);
+                relationship.set(na, nb, effect);
                 sc.nextLine();
                 break;
             case "*States":
-                s = nodes.get(sc.nextInt() - 1);
+                s = nodeList.get(sc.nextInt() - 1);
                 s.state = sc.nextInt();
                 sc.nextLine();
                 break;
             case "*Types":
-                s = nodes.get(sc.nextInt() - 1);
+                s = nodeList.get(sc.nextInt() - 1);
                 String type = sc.next();
                 s.type = type;
                 sc.nextLine();
@@ -74,11 +81,11 @@ public class Pajek {
                 for (int i = 0; i < dpd.length; i++) {
                     dpd[i] = Integer.parseInt(rlt[i+1]) - 1;
                 }
-                s = nodes.get(Integer.parseInt(rlt[0]) - 1);
+                s = nodeList.get(Integer.parseInt(rlt[0]) - 1);
                 s.setDependency(dpd);
                 break;
             case "*Milestones":
-                s = nodes.get(sc.nextInt() - 1);
+                s = nodeList.get(sc.nextInt() - 1);
                 s.milestoneTermination = sc.nextBoolean();
                 sc.nextLine();
                 break;
@@ -87,7 +94,7 @@ public class Pajek {
         sc.close();
     }
 
-    public Network readFile(String filePrefix) {
+    public static Network readFile(String filePrefix) {
 
         try {
 
@@ -98,18 +105,15 @@ public class Pajek {
             e.printStackTrace();
         }
 
-        return new Network(nodes, relat);
+        return new Network(nodeList, relationship);
     }
     
     /*
      * Write the network structure into file with compliance to Pajek format
      */
-    public void writeFile(String filePrefix, Network network) {
+    public void writeNetwork(String filePrefix) {
         try {
 
-            NodeList nodeList = network.getNodeList();
-            Relationship relationship = network.getRelationship();
-            Node[] vertices = nodeList.getNodeList();
 
             //=== Write .net Network file ===
             BufferedWriter writer = new BufferedWriter(
@@ -151,9 +155,17 @@ public class Pajek {
             }
 
             writer.close();
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void writeBNetSimFile(String filePrefix) {
+        try {
 
             //=== Write .bns BNetSim file ===
-            writer = new BufferedWriter(
+            BufferedWriter writer = new BufferedWriter(
                     new FileWriter(filePrefix + ".bns"));
 
             //Write States
@@ -198,8 +210,16 @@ public class Pajek {
 
             writer.close();
 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }        
+    }
+    
+    public void writePartition(String filePrefix) {
+        try {
+            
             //=== Write .clu Partitions file ===
-            writer = new BufferedWriter(
+            BufferedWriter writer = new BufferedWriter(
                     new FileWriter(filePrefix + ".clu"));
 
             //Write Partitions
@@ -221,10 +241,10 @@ public class Pajek {
 
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }              
     }
-
-    public void writeRobustnessTestResult(String filePrefix, Network net, int[] result) {
+    
+    public static void writeRobustnessTestResult(String filePrefix, Network net, int[] result) {
 
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(filePrefix + ".net"));
@@ -257,4 +277,5 @@ public class Pajek {
             e.printStackTrace();
         }
     }
+
 }

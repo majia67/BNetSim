@@ -18,8 +18,8 @@ public class RobustnessTest {
         {"Remains Stable", "Repeat Same Road", "Terminated", "Exceed Max Round"};
 
     public RobustnessTest(String file) {
-        Pajek pj = new Pajek();
-        net = pj.readFile(file);
+
+        net = Pajek.readFile(file);
         sizeOfNetwork = net.size();
         progress = 0;
         totalTestNum = totalTestNum(net);
@@ -139,8 +139,7 @@ public class RobustnessTest {
         //        System.out.println();
 
         System.out.println("Export Pajek network file...");
-        Pajek pj = new Pajek();
-        pj.writeRobustnessTestResult(fileName, net, result);
+        Pajek.writeRobustnessTestResult(fileName, net, result);
         System.out.println("Complete!");
 
     }

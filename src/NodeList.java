@@ -21,6 +21,13 @@ public class NodeList implements Iterable<Node>{
         milestoneNodes = new HashSet<Integer>();
     }
     
+    public NodeList(Node[] nodeList) {
+        this(nodeList.length);
+        for (int i = 0; i < nodeList.length; i++) {
+            set(i, nodeList[i]);
+        }
+    }
+    
     public int getIndex(String name) {
         if (indexTable.containsKey(name)) {
             return indexTable.get(name);
@@ -134,6 +141,7 @@ public class NodeList implements Iterable<Node>{
     public void setMilestone(String node, boolean milestoneTermination) {
         Node nd = get(node);
         nd.setMilestone(milestoneTermination);
+        milestoneNodes.add(getIndex(node));
     }
     
     @Override

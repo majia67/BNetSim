@@ -11,7 +11,7 @@ import java.io.File;
 
 public class C_elegans_Cytokinesis {
     
-    private static String fileName = "data" + File.separator + 
+    private static String filePrefix = "data" + File.separator + 
                                      "C_elegans_Cytokinesis";
     private static int POSI                 = 1;
     private static int NEGA                 = -100;
@@ -106,7 +106,8 @@ public class C_elegans_Cytokinesis {
         ng.setRelationship("AnaOnset", "CDK-1", NEGA);
         ng.setRelationship("ContrRing", "LET-502", POSI);
 
-        ng.writeFile(fileName);
+        ng.writeFile(filePrefix, true);
+        ng.writeDependencyNetwork(filePrefix, true);
     }
 
 }

@@ -11,8 +11,7 @@ public class StatePrediction {
     Network network;
     
     public StatePrediction(String file) {
-        Pajek pj = new Pajek();
-        network = pj.readFile(file);
+        network = Pajek.readFile(file);
     }
     
     public void run(int maxRound) {
