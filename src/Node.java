@@ -1,56 +1,48 @@
-import java.util.Hashtable;
 
 public class Node {
     
     //General definition
     String name;
-    int state;
     String type;
+    int state;
     
-    //Definition for Requirements
-    Hashtable<String, Integer> requires;
+    //Definition for Dependency
+    int[] depends;
     
-    //Definition for Milestone 
-    boolean milestone_hasChanged = false;
-    boolean milestone_termination;
+    //Definition for Milestone
+    boolean milestoneTermination;
     
+    //Definition for constants
     public static final int ON = 1;
     public static final int OFF = 0;
-    
-    public Node() {
-        this("");
-    }
     
     public Node(String name) {
         this(name, 0);
     }
     
     public Node(String name, int state) {
-        this(name, state, "Vertex");
-    }
-    
-    public Node(String name, int state, String type) {
-        this(name, state, type, false);
-    }
-    
-    public Node(String name, int state, String type, boolean milestone_termination) {
         this.name = name;
         this.state = state;
-        this.type = type;
-        this.milestone_termination = milestone_termination;
+        type = "Vertex";
     }
     
-    public boolean setRequires(String na, Integer st) {
-        if (na != null && st != null) {
-            if (requires == null) { requires = new Hashtable<String, Integer>(); }
-            requires.put(na, st);
-            return true;
-        }
-        return false;
+    public void setDependency(int[] dependencies) {
+        depends = dependencies;
+    }
+    
+    public void setMilestone(boolean milestoneTermination) {
+        type = "Milestone";
+        this.milestoneTermination = milestoneTermination; 
     }
     
     public Node clone() {
-        Node cl = new Node(name, state, type);
+        Node cl = new Node(name, state);
+        if (type.equals("Milestone")) {
+            cl.setMilestone(milestoneTermination);
+        }
+        if (depends != null) {
+            cl.setDependency(depends.clone());
+        }
         return cl;
     }
 }

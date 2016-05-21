@@ -1,70 +1,82 @@
-*Vertices 27
-1	CYK-4
-2	ZEN-4
-3	NOP-1
-4	ECT-2
-5	RGA-3/4
-6	RhoA(GDP)
-7	RhoA(GTP)
-8	ANI-1
-9	F-Actin
-10	CenSpindlin
-11	KIF4
-12	PRC1
-13	CenSpinMt
-14	AstralMt
-15	Plk1
-16	Cdk1
-17	ROCK
-18	Profilin
-19	LET-502
-20	MEL-11
-21	NMY-2
-22	NMY-2(P)
-23	MLC-4
-24	MLC-4(P)
-25	CYK-1
-26	ContrRing
-27	CleaFurContr
+*Vertices 29
+1 CYK-4 ellipse
+2 ZEN-4 ellipse
+3 NOP-1 ellipse
+4 ECT-2 ellipse
+5 RGA-3/4 ellipse
+6 RhoA(GDP) ellipse
+7 RhoA(GTP) ellipse
+8 ANI-1(Cortex) ellipse
+9 ANI-1(CenSpin) ellipse
+10 F-Actin ellipse
+11 CenSpindlin ellipse
+12 KIF-4 ellipse
+13 PRC-1 ellipse
+14 CenSpinMt ellipse
+15 AstralMt ellipse
+16 PLK-1 ellipse
+17 CDK-1 ellipse
+18 ROCK ellipse
+19 Profilin ellipse
+20 LET-502 ellipse
+21 MEL-11 ellipse
+22 NMY-2 ellipse
+23 NMY-2(P) ellipse
+24 MLC-4 ellipse
+25 MLC-4(P) ellipse
+26 CYK-1 ellipse
+27 AnaOnset diamond
+28 ContrRing diamond
+29 CleaFurContr diamond
 *Arcs
-1	10	1
-2	10	1
-3	4	1
-4	6	-100
-4	7	1
-5	6	1
-5	7	-100
-7	8	1
-7	17	1
-7	25	1
-8	14	1
-8	21	1
-9	21	1
-9	23	1
-9	26	1
-10	4	1
-11	13	1
-12	11	1
-12	13	1
-12	15	1
-13	10	1
-14	8	1
-15	4	1
-15	11	1
-16	1	-100
-16	2	-100
-16	12	-100
-17	20	-100
-17	24	1
-18	9	1
-19	20	-100
-20	24	-100
-21	26	1
-22	27	1
-23	26	1
-24	22	1
-25	7	1
-25	18	1
-25	25	-1
-25	26	1
-26	19	1
+1 11 1 c OliveGreen p Solid
+2 11 1 c OliveGreen p Solid
+3 4 1 c OliveGreen p Solid
+4 5 -100 c Red p Solid
+4 6 -100 c Red p Solid
+4 7 1 c OliveGreen p Solid
+5 6 1 c OliveGreen p Solid
+5 7 -100 c Red p Solid
+7 8 1 c OliveGreen p Solid
+7 9 1 c OliveGreen p Solid
+7 18 1 c OliveGreen p Solid
+7 26 1 c OliveGreen p Solid
+8 28 -100 c Red p Solid
+9 22 1 c OliveGreen p Solid
+9 24 1 c OliveGreen p Solid
+10 22 1 c OliveGreen p Solid
+10 24 1 c OliveGreen p Solid
+10 28 1 c OliveGreen p Solid
+11 4 1 c OliveGreen p Solid
+12 14 1 c OliveGreen p Solid
+12 15 1 c OliveGreen p Solid
+13 12 1 c OliveGreen p Solid
+13 14 1 c OliveGreen p Solid
+13 15 1 c OliveGreen p Solid
+13 16 1 c OliveGreen p Solid
+14 1 1 c OliveGreen p Solid
+14 2 1 c OliveGreen p Solid
+15 8 -100 c Red p Solid
+15 9 1 c OliveGreen p Solid
+16 4 1 c OliveGreen p Solid
+16 12 -100 c Red p Solid
+17 1 -100 c Red p Solid
+17 2 -100 c Red p Solid
+17 13 -100 c Red p Solid
+18 21 -100 c Red p Solid
+18 25 1 c OliveGreen p Solid
+19 10 1 c OliveGreen p Solid
+20 21 -100 c Red p Solid
+21 25 -100 c Red p Solid
+22 28 1 c OliveGreen p Solid
+23 29 1 c OliveGreen p Solid
+24 28 1 c OliveGreen p Solid
+25 23 1 c OliveGreen p Solid
+26 7 1 c OliveGreen p Solid
+26 19 1 c OliveGreen p Solid
+26 26 -1 c Red p Solid
+26 28 1 c OliveGreen p Solid
+27 13 1 c OliveGreen p Solid
+27 16 1 c OliveGreen p Solid
+27 17 -100 c Red p Solid
+28 20 1 c OliveGreen p Solid
