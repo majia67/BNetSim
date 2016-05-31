@@ -8,7 +8,7 @@ auto-compile script and pre-compiled jar files.
 
 ## Usage
 To generate network description file: modify two examples I gave (Budding_Yeast_Cell_Cycle.java & C_elegans_Cytokinesis.java). 
-The file is self-explanatory.
+The file is self-explanatory. Then compile and run the file to generate the network structure files. Some examples can be found in the data/ folder.
 
 To do network simulation: java StatePrediction NETWORK_FILE_NAME
 
